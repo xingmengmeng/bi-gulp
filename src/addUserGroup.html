@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签工厂-国美金控大数据产品</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <!-- build:css css/all.min.css -->
+    <link rel="stylesheet/less" href="css/reset.min.less">
+    <link rel="stylesheet/less" href="css/layout.less">
+    <link rel="stylesheet/less" href="css/detail.less">
+    <link rel="stylesheet/less" href="css/addUserGroup.less">
+    <link rel="stylesheet/less" href="css/loading.less">
+    <script src="js/less-2.5.3.min.js"></script>
+    <!--endbuild-->
+</head>
+<body>
+<!--header start-->
+<header class="container" id="header">
+    <a href="index.html" class="logo left">logo</a>
+    <div class="logoF">用户标签管理系统</div>
+    <div class="right headRight">
+        <!--<a href="#" class="set-mes">设置</a>-->
+        <div class="ad-center" @mouseenter="toolEnter" @mouseleave="toolLeave">
+            <div class="right userMess">
+                <span v-cloak>{{userName}}</span>
+                <i></i>
+            </div>
+            <ul class="headerTool">
+                <li><a href="javascript:;" @click="logoutFn">注销</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav" v-cloak>
+        <a v-for="menu in menuData" :href="'.'+menu.href" :class="urlData==menu.href?'active':''">{{menu.name}}</a>
+        <!--<a href="javascript:;" class="active">首页</a>
+        <a href="./userGroup.html">用户群</a>
+        <a href="./pushActivities.html">营销活动</a>-->
+    </div>
+</header>
+<!--header end-->
+<section class="container" id="mainWrap">
+    <!--left side start-->
+    <section class="leftSide">
+        <ul id="leftMenu">
+            <li>
+                <a href="userGroup.html" class="active">用户群列表</a>
+            </li>
+        </ul>
+        <div class="show-hide">
+            显示隐藏按钮
+        </div>
+    </section>
+    <!--left side end-->
+    <!--右侧大块 start-->
+    <section class="rightSide">
+        <div class="app appAndUser clearfix addUsers">
+            <div class="left addUsersLeft clearfix">
+                <!--用户群树级结构-->
+                <ul class="box clearfix" id="box">
+                    <li class="one-li clearfix" v-for="treeOne in treeResData" v-cloak>
+                        <span class="one-span">{{treeOne.name}}</span>
+                        <ul class="two">
+                            <li v-for="treeTwo in treeOne.children">
+                                <span class="two-span" @click="showChild(treeTwo.id)" :class="{'two-span2':treeTwo.id == i}" v-cloak>{{treeTwo.name}}</span>
+                                <ul class="three"  v-show="treeTwo.id == i">
+                                    <li v-for="treeThree in treeTwo.children">
+                                        <span :id="treeThree.id" class="three-span" :class="{'three-span2':treeThree.id == j}" @click="showFourTree(treeThree.id)" v-cloak>{{treeThree.name}}</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--<li class="one-li clearfix">
+                        <span class="one-span">人口统计</span>
+                        <ul class="two">
+                            <li>
+                                <span class="two-span">第二级第一个</span>
+                                <ul class="three">
+                                    <li><span>第三级第一个</span></li>
+                                    <li><span>第三级第二个</span></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <span class="three-span">第二级第二个</span>
+                                <ul class="three">
+                                    <li><span>第三级第一个</span></li>
+                                    <li><span>第三级第二个</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>-->
+                </ul>
+            </div>
+            <div class="left addUsersCenter">
+                <div class="center">
+                    <loadings v-show="showLoading"></loadings>
+                    <div class="clearfix searchWrap">
+                        <input type="text" placeholder="搜索" v-model="addGroupSearchCon" class="searchInput" @keyup.enter="addUserGroupSearch(addGroupSearchCon)">
+                        <button class="searchBtn" @click="addUserGroupSearch(addGroupSearchCon)"></button>
+                    </div>
+                    <div class="clearfix fourWrap">
+                        <ul class="four_scroll">
+                            <li v-for="fourData in fourResData" class="clearfix" v-cloak>
+                                <input type="checkbox" class="checks" v-model="fourData.checked" @click="getSendData(fourData)">
+                                <i :class="fourData.checked?'classA':'classB'"></i>
+                                <label class="checkLabel"><span v-cloak>{{fourData.name}}</span><span v-cloak>({{fourData.count}})</span><span>{{fourData.rate}}</span></label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="left addUsersRight">
+                <div class="biWrap">
+                    <div class="scroll_wrap">
+                        <h6>所有标签 (所有标签都必须满足)</h6>
+                        <div class="clearfix">
+                            <ul class="clearfix andUl" v-show="biAllAry.length!=0">
+                                <li class="clearfix" v-for="biValue in biAllAry">
+                                    <div class="rightTool">
+                                        <a href="javascript:;" @click="toDown(biValue.parentId)">下移</a>
+                                        <a href="javascript:;" class="tool-delete" @click="deleteData(biValue.parentId)">删除</a>
+                                    </div>
+                                    <div class="leftCon">
+                                        <span v-cloak>{{biValue.value}}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h6>任意标签 (必须至少一个标签满足)</h6>
+                        <div class="clearfix">
+                            <ul class="clearfix andUl" v-show="biEveryAry.length!=0">
+                                <li class="clearfix" v-for="biEvery in biEveryAry">
+                                    <div class="rightTool">
+                                        <a href="javascript:;" @click="toUp(biEvery.parentId)">上移</a>
+                                        <a href="javascript:;" class="tool-delete" @click="deleteData(biEvery.parentId)">删除</a>
+                                    </div>
+                                    <div class="leftCon">
+                                        <span v-cloak>{{biEvery.value}}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!--滚动块下方内容 start-->
+                <div class="clearfix biFooter">
+                    <div class="clearfix allNum">
+                        <p class="left" v-cloak>已选择了 {{n}}个标签，统计用户数：  {{statisUsers.count}}， {{statisUsers.rate}}</p>
+                        <button class="clear_btn" @click="clearList">清空</button>
+                    </div>
+                    <div class="btnWrap">
+                        <input type="button" value="取消" @click="goList">
+
+                        <input type="button" value="提交" @click="showMark" disabled id="saveGroup">
+                    </div>
+                </div>
+                <!--滚动块下方内容 end-->
+
+                <!--弹框遮罩 start-->
+                <div class="overlay"></div>
+                <div class="markWarp">
+                    <div class="markTitle clearfix">
+                        <h5>创建用户群</h5>
+                        <i class="right close" @click="hideMark">关闭</i>
+                    </div>
+                    <ul class="clearfix addUserGroup">
+                        <li class="clearfix">
+                            <label class="left"><strong>*</strong>用户群名称：</label>
+                            <input type="text" v-model="userGroupName" placeholder="最多可输入10个字符" class="left txt">
+                        </li>
+                        <li class="errorLi clearfix" style="padding:0px 0 0 95px;height: 14px; font-size: 12px; color: #B40606;">
+                            <span v-cloak>{{savaError}}</span>
+                        </li>
+                        <li class="btnWrap" style="margin-top: 10px">
+                            <input type="button" value="取消" @click="hideMark">
+                            <input type="button" value="确定" @click="addUserGroupFn">
+                        </li>
+                    </ul>
+                </div>
+                <!--弹框遮罩 end-->
+            </div>
+        </div>
+    </section>
+    <!--右侧大块 end-->
+</section>
+<footer id="footer">
+    <p>Copyright © 2017 国美金控投资有限公司 | 津ICP备15008982号</p>
+</footer>
+
+
+<script src="commonJs/vue.js"></script>
+<script src="commonJs/vue-resource.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/header.js"></script>
+<script src="js/addUserGroup.js"></script>
+<script src="commonJs/iscroll-5.1.3.min.js"></script>
+<script src="js/loading.js"></script>
+</body>
+</html>

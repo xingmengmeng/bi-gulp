@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签工厂-国美金控大数据产品</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <!-- build:css css/all.min.css -->
+    <link rel="stylesheet/less" href="css/reset.min.less">
+    <link rel="stylesheet/less" href="css/layout.less">
+    <link rel="stylesheet/less" href="css/detail.less">
+    <script src="js/less-2.5.3.min.js"></script>
+    <!--endbuild-->
+</head>
+<body>
+<!--header start-->
+<header class="container" id="header">
+    <a href="index.html" class="logo left">logo</a>
+    <div class="logoF">用户标签管理系统</div>
+    <div class="right headRight">
+        <!--<a href="#" class="set-mes">设置</a>-->
+        <div class="ad-center" @mouseenter="toolEnter" @mouseleave="toolLeave">
+            <div class="right userMess">
+                <span v-cloak>{{userName}}</span>
+                <i></i>
+            </div>
+            <ul class="headerTool">
+                <li><a href="javascript:;" @click="logoutFn">注销</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav" v-cloak>
+        <a v-for="menu in menuData" :href="'.'+menu.href" :class="urlData==menu.href?'active':''">{{menu.name}}</a>
+        <!--<a href="javascript:;" class="active">首页</a>
+        <a href="./userGroup.html">用户群</a>
+        <a href="./pushActivities.html">营销活动</a>-->
+    </div>
+</header>
+<!--header end-->
+
+<section class="container" id="mainWrap">
+    <!--left side start-->
+    <section class="leftSide">
+        <ul id="leftMenu">
+            <li>
+                <a href="userGroup.html" class="active">用户群列表</a>
+            </li>
+        </ul>
+        <div class="show-hide">
+            显示隐藏按钮
+        </div>
+    </section>
+    <!--left side end-->
+    <!--右侧大块 start-->
+    <section class="rightSide">
+        <div class="deTail">
+            <div class="detailTitle">
+                <h3 v-cloak>{{thisGroupName}}<a href="javascript:;" class="right creatAct" @click="showMark">+创建活动</a></h3>
+            </div>
+            <section class="clearfix nextWrap">
+                <div class="right rightMenu">
+                    <ul>
+                        <li>
+                            <a href="userGroupDetails.html">用户群信息</a>
+                        </li>
+                        <li>
+                            <a href="userLabel.html">用户标签</a>
+                        </li>
+                        <!--<li>
+                            <a href="pushActivities.html">推送活动</a>
+                        </li>-->
+                        <li class="active">
+                            <a href="downloadLink.html">CSV下载</a>
+                        </li>
+                        <li>
+                            <a href="liabry.html">操作日志</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="leftDiv">
+                    <div class="con clearfix">
+                        <h5 class="listH5">CSV下载</h5>
+                        <div class="logScroll">
+                            <ul class="logList">
+                                <!--<li class="clearfix">
+                                    <a href="javascript:;" @click="showDownMark('downloadUserId')">用户user ID.csv格式</a>
+                                </li>
+                                <li class="clearfix">
+                                    <a href="javascript:;" @click="showDownMark('downloadCusId')">用户customer_ID.csv格式</a>
+                                </li>
+                                <li class="clearfix">
+                                    <a href="javascript:;" @click="showDownMark('downloadPhoneNo')">用户手机号.csv格式</a>
+                                </li>-->
+
+                                <li class="clearfix">
+                                    <a href="javascript:;" @click="showDownMark('downloadUserId')">用户系统ID+手机号.csv格式</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!--弹框遮罩 start-->
+                    <div class="overlay"></div>
+                    <!--下载的弹框-->
+                    <div class="markWarp markDown">
+                        <div class="markTitle clearfix">
+                            <h5>CSV下载</h5>
+                            <i class="right close" @click="hideMark">关闭</i>
+                        </div>
+                        <ul class="clearfix">
+                            <li class="clearfix">
+                                <span v-cloak>当前加载覆盖用户数：{{actCount}}</span>
+                            </li>
+                            <li class="clearfix liN">
+                                <label><strong>*</strong>请输入授权密码：</label>
+                                <input type="password" v-model="psw" class="txt">
+                            </li>
+                            <li class="liNext">
+                                <span v-cloak>{{downError}}</span>
+                            </li>
+                            <li class="clearfix btnWrap">
+                                <input type="button" value="取消" @click="hideMark">
+                                <input type="button" value="确定" @click="downCsv">
+                            </li>
+                        </ul>
+                    </div>
+                    <!--新增活动的弹框-->
+                    <div class="markWarp markAddAct">
+                        <div class="markTitle clearfix">
+                            <h5>新增活动</h5>
+                            <i class="right close" @click="hideMark">关闭</i>
+                        </div>
+                        <ul class="clearfix">
+                            <li class="clearfix">
+                                <label><strong>*</strong>用户群：</label>
+                                <span class="left curNameSpan" v-cloak>{{thisGroupName}}</span>
+                                <a href="addUserGroup.html" class="creatNew" style="font-size: 12px">想创建新的用户群？</a>
+                            </li>
+                            <li class="clearfix">
+                                <label><strong>*</strong>对接系统：</label>
+                                <select v-model="selected" class="left">
+                                    <option v-for="op in querySystemList" :value="op" v-cloak>{{op}}</option>
+                                </select>
+                            </li>
+                            <li class="clearfix">
+                                <label><strong>*</strong>主题：</label>
+                                <input type="text" v-model="subject" class="txt">
+                            </li>
+                            <li class="clearfix">
+                                <label><strong>*</strong>活动覆盖用户数：</label>
+                                <span class="left countNum" v-cloak>{{counts}}</span>
+                                <button @click="countNum" class="countBtn">刷新</button>
+                            </li>
+                            <li class="clearfix saveErrorLi">
+                                <span>{{saveError}}</span>
+                            </li>
+                            <li class="clearfix btnWrap" style="margin-top: 10px">
+                                <input type="button" value="取消" @click="hideMark">
+                                <input type="button" value="确定" @click="addUserGroupFn">
+                            </li>
+                        </ul>
+                    </div>
+                    <!--弹框遮罩 end-->
+                </div>
+            </section>
+        </div>
+    </section>
+    <!--右侧大块 end-->
+</section>
+
+<footer id="footer">
+    <p>Copyright © 2017 国美金控投资有限公司 | 津ICP备15008982号</p>
+</footer>
+
+<script src="commonJs/vue.js"></script>
+<script src="commonJs/vue-resource.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/header.js"></script>
+<script src="commonJs/iscroll-5.1.3.min.js"></script>
+
+</body>
+</html>

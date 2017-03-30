@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签工厂-国美金控大数据产品</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <!-- build:css css/all.min.css -->
+    <link rel="stylesheet/less" href="css/reset.min.less">
+    <link rel="stylesheet/less" href="css/layout.less">
+    <link rel="stylesheet/less" href="css/userGroup.less">
+    <script src="js/less-2.5.3.min.js"></script>
+    <!--endbuild-->
+</head>
+<body>
+<!--header start-->
+<header class="container" id="header">
+    <a href="index.html" class="logo left">logo</a>
+    <div class="logoF">用户标签管理系统</div>
+    <div class="right headRight">
+        <!--<a href="#" class="set-mes">设置</a>-->
+        <div class="ad-center" @mouseenter="toolEnter" @mouseleave="toolLeave">
+            <div class="right userMess">
+                <span v-cloak>{{userName}}</span>
+                <i></i>
+            </div>
+            <ul class="headerTool">
+                <li><a href="javascript:;" @click="logoutFn">注销</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav" v-cloak>
+        <a v-for="menu in menuData" :href="'.'+menu.href" :class="urlData==menu.href?'active':''">{{menu.name}}</a>
+        <!--<a href="javascript:;" class="active">首页</a>
+        <a href="./userGroup.html">用户群</a>
+        <a href="./pushActivities.html">营销活动</a>-->
+    </div>
+</header>
+<!--header end-->
+
+<section class="container" id="mainWrap">
+    <!--left side start-->
+    <section class="leftSide">
+        <ul id="leftMenu">
+            <li>
+                <a href="#" class="active">用户群列表</a>
+            </li>
+        </ul>
+        <div class="show-hide">
+            显示隐藏按钮
+        </div>
+    </section>
+    <!--left side end-->
+    <!--右侧大块 start-->
+    <section class="rightSide clearfix">
+        <div class="app appList clearfix">
+            <div class="group-tool">
+                <div class="left">
+                    <a href="addUserGroup.html">+ 添加用户群</a>
+                </div>
+                <!--分页-->
+                <div class="right clearfix" @click="getPageData">
+                    <span class="allPage" v-cloak>1-{{pageCount}}</span>
+                    <span id="prev">上一页</span>
+                    <input type="text" class="goTo" v-model="gotoPage" @keyup.enter="gotoPageFn">
+                    <span id="next">下一页</span>
+                </div>
+                <!--搜索-->
+                <div class="center">
+                    <div class="searchWrap">
+                        <input type="text" v-model="shContent" placeholder="输入用户群名称/创建人" @keyup.enter="searchFun(shContent)">
+                        <button class="searchBtn" @click="searchFun(shContent)"></button>
+                    </div>
+                </div>
+            </div>
+            <table class="table" width="100%">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>用户群名称</th>
+                    <th>标签条件数</th>
+                    <th>状态</th>
+                    <th>创建人</th>
+                    <th>部门</th>
+                    <th>创建时间</th>
+                    <th width="6%">&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in list" @click="setIdLocal(item.id,item.name,item.status,$event)">
+                    <td v-cloak>{{item.sno}}</td>
+                    <td><a :href="'userGroupDetails.html?id='+item.id" v-cloak class="groupName" @click="setIdLocal(item.id,item.name,item.status,$event)">{{item.name}}</a></td>
+                    <td v-cloak>{{item.tagCount}}</td>
+                    <td v-cloak>{{item.status==0?'禁用':'启用'}}</td>
+                    <td v-cloak>{{item.creater}}</td>
+                    <td v-cloak>{{item.createrDept}}</td>
+                    <td v-cloak>{{item.createTime}}</td>
+                    <td>
+                        <a :href="'userGroupDetails.html?id='+item.id" class="listDetailLink" @click="setIdLocal(item.id,item.name,item.status,$event)">详情</a>
+                        <a href="javascript:;" @click="deleteUserGroup(item.id,$event)" class="listDeleteBtn">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!--弹框遮罩 start-->
+            <div class="overlay"></div>
+
+            <!--删除弹框-->
+            <div class="markDelet">
+                <p>删除此用户群将删除其相关的活动信息和标签信息。您确定你要删除该用户群吗？</p>
+                <div class="btnWrap">
+                    <input type="button" value="否" @click="deletFalse">
+                    <input type="button" value="是" @click="deleteTrue">
+                </div>
+            </div>
+
+            <!--弹框遮罩 end-->
+        </div>
+    </section>
+    <!--右侧大块 end-->
+</section>
+<footer id="footer">
+    <p>Copyright © 2017 国美金控投资有限公司 | 津ICP备15008982号</p>
+</footer>
+
+<script src="commonJs/vue.js"></script>
+<script src="commonJs/vue-resource.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/header.js"></script>
+<script src="commonJs/iscroll-5.1.3.min.js"></script>
+<script src="js/userGroup.js"></script>
+
+</body>
+</html>

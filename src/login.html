@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签工厂-国美金控大数据产品</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <!-- build:css css/all.min.css -->
+    <link rel="stylesheet/less" href="css/reset.min.less">
+    <link rel="stylesheet/less" href="css/animate.less">
+    <link rel="stylesheet/less" href="css/login.less">
+    <script src="js/less-2.5.3.min.js"></script>
+    <!--endbuild-->
+</head>
+<body class="loginBody">
+<section id="login" class="loginContainer">
+    <i></i>
+    <div class="loginWrap">
+        <img src="images/ls_6.png" alt="" class="lsImg">
+        <ul class="loginUl">
+            <li>
+                <h2>国美金控用户标签管理系统</h2>
+            </li>
+            <li>
+                <input type="text" name="username" id="username" class="txt" placeholder="请输入账号">
+            </li>
+            <li>
+                <input type="password" name="password" id="password" class="txt" placeholder="请输入密码" @keyup.enter="saveInfo">
+            </li>
+            <li class="remLi clearfix">
+                <span :class="isSaveCheck?'selectIcon':'noSelectIcon'"></span>
+                <input type="checkbox" name="rememberPass" id="rememberPass" v-model="isSaveCheck">
+                <label for="rememberPass" class="left">记住密码</label>
+            </li>
+            <li class="redF" v-cloak>
+                {{errorMessage}}
+            </li>
+            <li>
+                <input type="button" value="登  录" id="loginBtn" @click="saveInfo">
+            </li>
+        </ul>
+    </div>
+</section>
+<footer class="footer">
+    Copyright © 2017 国美金控投资有限公司 | 津ICP备15008982号
+</footer>
+<img src="images/ls_1.png" alt="" class="flowImg img1">
+<img src="images/ls_2.png" alt="" class="flowImg img2">
+<img src="images/ls_3.png" alt="" class="flowImg img3">
+<img src="images/ls_4.png" alt="" class="flowImg img4">
+<img src="images/ls_5.png" alt="" class="flowImg img5">
+
+
+<script src="commonJs/vue.js"></script>
+<script src="commonJs/vue-resource.js"></script>
+<script src="js/login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+var gulp=require('gulp');
+var $=require('gulp-load-plugins')();//元素的  非自己的  需要安装模块   引入所有gulp开头的模块
+gulp.task('html',function () {
+    gulp.src('./src/*.html')
+        .pipe(gulp.dest('./build'))
+        .pipe($.connect.reload());
+});
+gulp.task('ico',function () {
+    gulp.src('./src/*.ico')
+        .pipe(gulp.dest('./build'));
+});
+
+gulp.task('css',['addAll'],function () {
+    gulp.src('./src/css/*.less')
+        .pipe($.less())
+        .pipe($.concat('all.css'))
+    //.pipe(gulp.dest('./build/css'))
+        .pipe($.cleanCss())
+        .pipe($.rename(function (file) {
+            file.basename+='.min';
+        }))
+        .pipe(gulp.dest('./build/css'));
+});
+gulp.task('addAll', function () {
+    return gulp.src('src/*.html')
+        .pipe($.useref())
+        .pipe(gulp.dest('./build'));
+});
+gulp.task('js',function(){
+    gulp.src('./src/js/*.js')
+        .pipe($.plumber())
+        .pipe($.babel({presets:['es2015']}))
+        //.pipe($.concat('all.js'))
+        //.pipe(gulp.dest('./build/js'))
+        .pipe($.uglify())
+        /*.pipe($.rename(function(file){
+            file.basename += '.min';
+        }))*/
+        .pipe(gulp.dest('./build/js'));
+});
+gulp.task('comJs',function () {
+    gulp.src('./src/commonJs/*.js')
+        .pipe(gulp.dest('./build/commonJs'));
+})
+gulp.task('imagemin', function(){
+    return gulp.src('./src/images/**/*.*')
+        .pipe($.imagemin())
+        .pipe(gulp.dest('./build/images'));
+})
+gulp.task('server',function () {
+    $.connect.server({
+        port:3000,//端口
+        root:'./build',//根目录
+        livereload:true,//启动自动刷新
+    })
+})
+gulp.task('watch',function () {
+    gulp.watch('./src/index.html',['html','inject']);
+    gulp.watch('./src/less/*.less',['css','html','inject']);
+    gulp.watch('./src/js/*.js',['js','html','inject']);
+})
+gulp.task('inject',function(){
+    var src = gulp.src('./src/index.html');
+    var source = gulp.src(['./build/js/all.min.js','./build/css/all.min.css']);
+    src.pipe($.inject(source,{ignorePath:'build',addRootSlash:false}))
+        .pipe(gulp.dest('./build'));
+});
+gulp.task('default',['ico','js','comJs', 'css', 'imagemin','addAll'],function () {
+    console.log('tasks all done!')
+})

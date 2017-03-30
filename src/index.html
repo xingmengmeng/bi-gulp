@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签工厂-国美金控大数据产品</title>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <!-- build:css css/all.min.css -->
+    <link rel="stylesheet/less" href="css/reset.min.less">
+    <link rel="stylesheet/less" href="css/layout.less">
+    <link rel="stylesheet/less" href="css/index.less">
+    <link rel="stylesheet/less" href="css/loading.less">
+    <script src="js/less-2.5.3.min.js"></script>
+    <!-- endbuild-->
+</head>
+<body>
+<!--header start-->
+<header class="container" id="header">
+    <a href="javascript:;" class="logo left">logo</a>
+    <div class="logoF">用户标签管理系统</div>
+    <div class="right headRight">
+        <!--<a href="#" class="set-mes">设置</a>-->
+        <div class="ad-center" @mouseenter="toolEnter" @mouseleave="toolLeave">
+            <div class="right userMess">
+                <span v-cloak>{{userName}}</span>
+                <i></i>
+            </div>
+            <ul class="headerTool">
+                <li><a href="javascript:;" @click="logoutFn">注销</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav" v-cloak>
+        <a v-for="menu in menuData" :href="'.'+menu.href" :class="urlData==menu.href?'active':''">{{menu.name}}</a>
+        <!--<a href="javascript:;" class="active">首页</a>
+        <a href="./userGroup.html">用户群</a>
+        <a href="./pushActivities.html">营销活动</a>-->
+    </div>
+</header>
+<!--header end-->
+<!--主要内容开始-->
+<section class="container chartsWrap" id="com-2">
+    <div class="mainLeft factory">
+        <div class="hWrap">
+            <h4>标签工厂</h4>
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic1">入库客户数据</h5>
+            </div>
+            <!--可点击切换部分 start-->
+
+            <!--可点击切换部分 end-->
+            <!--图表 start-->
+            <div>
+                <line-large-component></line-large-component>
+            </div>
+            <!--图表 end-->
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic2">标签数据</h5>
+            </div>
+            <!--图表 start-->
+            <div>
+                <pie-control-component></pie-control-component>
+            </div>
+            <!--图表 end-->
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic3">标签加工进度</h5>
+            </div>
+            <!--图表 start-->
+            <div class="clearfix" style="padding-bottom:10px">
+                <s-tab-component></s-tab-component>
+            </div>
+            <!--图表 end-->
+        </div>
+
+    </div>
+
+    <div class="mainLeft pros">
+        <div class="hWrap">
+            <h4>用户画像</h4>
+        </div>
+
+        <!--<div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic5">推送客户统计</h5>
+            </div>
+            &lt;!&ndash;图表 start&ndash;&gt;
+            <div>
+                <line-component></line-component>
+            </div>
+            &lt;!&ndash;图表 end&ndash;&gt;
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic6"> 跨业务线客户资源转化统计</h5>
+            </div>
+            &lt;!&ndash;图表 start&ndash;&gt;
+            <div>
+                <btn-click></btn-click>
+                <bar-stack-y></bar-stack-y>
+            </div>
+            &lt;!&ndash;图表 end&ndash;&gt;
+        </div>-->
+
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic4">美易理财画像</h5>
+            </div>
+            <!--图表 start-->
+            <div id="words">
+                <wordcloud></wordcloud>
+            </div>
+            <!--图表 end-->
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic6">标签关联画像</h5>
+            </div>
+            <!--图表 start-->
+            <div>
+                <index-table></index-table>
+            </div>
+            <!--图表 end-->
+        </div>
+    </div>
+    <div class="mainLeft mess">
+        <div class="hWrap">
+            <h4>智能匹配</h4>
+        </div>
+
+        <div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic5">用户群活动推送</h5>
+            </div>
+            <!--图表 start-->
+            <div>
+                <bar-stack-component></bar-stack-component>
+            </div>
+            <!--图表 end-->
+        </div>
+
+        <!--<div class="echarts-wraper">
+            <div class="div-title">
+                <h5 class="ic3">操作记录</h5>
+            </div>
+            &lt;!&ndash;图表 start&ndash;&gt;
+            <div>
+                <bar-left-right></bar-left-right>
+            </div>
+            &lt;!&ndash;图表 end&ndash;&gt;
+        </div>-->
+
+    </div>
+</section>
+
+
+<script src="commonJs/vue.js"></script>
+<script src="commonJs/vue-resource.js"></script>
+<script src="commonJs/echarts.js"></script>
+<script src="commonJs/echarts-wordcloud.js"></script>
+<script src="js/header.js"></script>
+<!--设置图表的宽高-->
+<script>
+    var aDiv=document.querySelectorAll('.mainLeft');
+    var cliWidth=document.documentElement.clientWidth-20-17;
+    var aDivWidth=cliWidth/3;
+    aDiv.forEach(function (item) {
+        item.style.width=aDivWidth+'px';
+    })
+
+</script>
+<!--vue组件  reset为vue的公共js start-->
+
+<script src="js/bar-stack-component.js"></script>
+<script src="js/pie-control-component.js"></script>
+<script src="js/line-component.js"></script>
+<script src="js/line-large-component.js"></script>
+<script src="js/s-tab-component.js"></script>
+<script src="js/bar-stack-y-component.js"></script>
+<script src="js/wordcloud.js"></script>
+<script src="js/bar-left-right-component.js"></script>
+<script src="js/index-table.js"></script>
+<script src="js/reset.js"></script>
+<script src="js/slide.js"></script>
+</body>
+</html>
